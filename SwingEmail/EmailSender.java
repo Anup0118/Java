@@ -1,76 +1,93 @@
+package com.java.emailsender.ui;
+
 import javax.swing.*;
 import java.awt.event.*;
+import java.util.Properties;
 import javax.mail.*;
 import javax.mail.internet.*;
-import java.util.Properties;
 
-public class EmailSender {
-    public static void main(String[] args) {
-        JFrame frame = new JFrame("Email Sender");
-        frame.setSize(400, 400);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLayout(null);
+public class EmailsSender extends JFrame {
+    JTextField sender, receiver, subject;
+    JTextArea message;
+    JButton send;
 
-        JLabel senderLabel = new JLabel("Sender Email:");
-        senderLabel.setBounds(20, 20, 100, 25);
-        JTextField senderField = new JTextField();
-        senderField.setBounds(150, 20, 200, 25);
+    EmailsSender() {
+        setTitle("Email Sender");
+        setSize(400, 300);
+        setLayout(null);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        JLabel receiverLabel = new JLabel("Receiver Email:");
-        receiverLabel.setBounds(20, 60, 100, 25);
-        JTextField receiverField = new JTextField();
-        receiverField.setBounds(150, 60, 200, 25);
+        JLabel l1 = new JLabel("Sender:");
+        l1.setBounds(20, 20, 80, 20);
+        add(l1);
 
-        JLabel subjectLabel = new JLabel("Subject:");
-        subjectLabel.setBounds(20, 100, 100, 25);
-        JTextField subjectField = new JTextField();
-        subjectField.setBounds(150, 100, 200, 25);
+        JLabel l2 = new JLabel("Receiver:");
+        l2.setBounds(20, 50, 80, 20);
+        add(l2);
 
-        JLabel messageLabel = new JLabel("Message:");
-        messageLabel.setBounds(20, 140, 100, 25);
-        JTextArea messageArea = new JTextArea();
-        messageArea.setBounds(150, 140, 200, 100);
+        JLabel l3 = new JLabel("Subject:");
+        l3.setBounds(20, 80, 80, 20);
+        add(l3);
 
-        JButton sendButton = new JButton("Send");
-        sendButton.setBounds(150, 260, 100, 30);
+        JLabel l4 = new JLabel("Message:");
+        l4.setBounds(20, 110, 80, 20);
+        add(l4);
 
-        frame.add(senderLabel);
-        frame.add(senderField);
-        frame.add(receiverLabel);
-        frame.add(receiverField);
-        frame.add(subjectLabel);
-        frame.add(subjectField);
-        frame.add(messageLabel);
-        frame.add(messageArea);
-        frame.add(sendButton);
+        sender = new JTextField();
+        sender.setBounds(100, 20, 250, 20);
+        add(sender);
 
-        sendButton.addActionListener(new ActionListener() {
+        receiver = new JTextField();
+        receiver.setBounds(100, 50, 250, 20);
+        add(receiver);
+
+        subject = new JTextField();
+        subject.setBounds(100, 80, 250, 20);
+        add(subject);
+
+        message = new JTextArea();
+        message.setBounds(100, 110, 250, 100);
+        add(message);
+
+        send = new JButton("Send");
+        send.setBounds(150, 220, 100, 30);
+        add(send);
+
+        send.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                String sender = senderField.getText();
-                String receiver = receiverField.getText();
-                String subject = subjectField.getText();
-                String message = messageArea.getText();
-
-                // SMTP config (assume available)
-                Properties props = new Properties();
-                props.put("mail.smtp.host", "smtp.example.com");
-                props.put("mail.smtp.port", "25"); // change if needed
-
-                Session session = Session.getInstance(props, null);
                 try {
-                    MimeMessage msg = new MimeMessage(session);
-                    msg.setFrom(new InternetAddress(sender));
-                    msg.addRecipient(Message.RecipientType.TO, new InternetAddress(receiver));
-                    msg.setSubject(subject);
-                    msg.setText(message);
+                    Properties props = new Properties();
+                    props.put("mail.smtp.host", "smtp.gmail.com");
+                    props.put("mail.smtp.port", "587");
+                    props.put("mail.smtp.auth", "true");
+                    props.put("mail.smtp.starttls.enable", "true");
+
+                    // Add proper authentication (username & password)
+                    Session session = Session.getInstance(props, new Authenticator() {
+                        protected PasswordAuthentication getPasswordAuthentication() {
+                            return new PasswordAuthentication("sujita.ghlan34@gmail.com", "sulm wpxh wmys rcko");
+                        }
+                    });
+
+                    Message msg = new MimeMessage(session);
+                    msg.setFrom(new InternetAddress(sender.getText()));
+                    msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(receiver.getText()));
+                    msg.setSubject(subject.getText());
+                    msg.setText(message.getText());
+
                     Transport.send(msg);
-                    JOptionPane.showMessageDialog(frame, "Email Sent Successfully!");
+
+                    JOptionPane.showMessageDialog(null, "Email Sent!");
                 } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(frame, "Error Sending Email: " + ex.getMessage());
+                    JOptionPane.showMessageDialog(null, "Error: " + ex.getMessage());
                 }
             }
         });
 
-        frame.setVisible(true);
+        setVisible(true);
+    }
+
+    public static void main(String[] args) {
+        new EmailsSender();
     }
 }

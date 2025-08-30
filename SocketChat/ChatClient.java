@@ -3,7 +3,7 @@ import java.net.*;
 
 public class ChatClient {
     public static void main(String[] args) throws IOException {
-        Socket socket = new Socket("localhost", 5000);
+        Socket socket = new Socket("localhost", 5001);
         DataInputStream dis = new DataInputStream(socket.getInputStream());
         DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));

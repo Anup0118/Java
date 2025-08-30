@@ -3,7 +3,7 @@ import java.net.*;
 
 public class ChatServer {
     public static void main(String[] args) throws IOException {
-        ServerSocket server = new ServerSocket(5000);
+        ServerSocket server = new ServerSocket(5001);
         System.out.println("Server started. Waiting for client...");
         Socket socket = server.accept();
         System.out.println("Client connected.");
